@@ -1,7 +1,7 @@
 HELP.md
+/.idea/
 /target/
 /.mvn/
-
 
 ### STS ###
 .apt_generated
@@ -13,13 +13,13 @@ HELP.md
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
 *.iws
 *.iml
 *.ipr
-HELP.md
+
 mvnw
 mvnw.cmd
+
 
 ### NetBeans ###
 /nbproject/private/
