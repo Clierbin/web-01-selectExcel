@@ -3,7 +3,7 @@ package com.kairoshijun.excel.web01selectexcel.constants;
 /**
  * ClassName:Contants
  * Package:com.kairoshijun.excel.web01selectexcel.constants
- * description
+ * description  asd
  *
  * @author:zhangbin
  * @date:2019/3/22
@@ -11,7 +11,7 @@ package com.kairoshijun.excel.web01selectexcel.constants;
  * @Hello-Idea
  */
 public class Contants {
-    //广告
+    //广告 a
     public static final String AD="ad";
     //开屏
     public  static final String KAIPING="开屏";
