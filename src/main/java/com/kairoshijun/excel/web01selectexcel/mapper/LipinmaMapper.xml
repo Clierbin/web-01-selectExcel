@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.LipinmaMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Lipinma">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="lipinma" jdbcType="VARCHAR" property="lipinma" />
+    <result column="lp_list_id" jdbcType="INTEGER" property="lpListId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, lipinma, lp_list_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from lipinma
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from lipinma where lp_list_id = #{lipinmalistID}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from lipinma
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Lipinma">
+    insert into lipinma (id, lipinma, lp_list_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{lipinma,jdbcType=VARCHAR}, #{lpListId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Lipinma">
+    insert into lipinma
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="lipinma != null">
+        lipinma,
+      </if>
+      <if test="lpListId != null">
+        lp_list_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="lipinma != null">
+        #{lipinma,jdbcType=VARCHAR},
+      </if>
+      <if test="lpListId != null">
+        #{lpListId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Lipinma">
+    update lipinma
+    <set>
+      <if test="lipinma != null">
+        lipinma = #{lipinma,jdbcType=VARCHAR},
+      </if>
+      <if test="lpListId != null">
+        lp_list_id = #{lpListId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Lipinma">
+    update lipinma
+    set lipinma = #{lipinma,jdbcType=VARCHAR},
+      lp_list_id = #{lpListId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBylist">
+    update lipinma set lp_list_id = #{lipinmalistID} where id in
+    (select x.id from ( select id from lipinma where lp_list_id = 0 limit #{lpNum}) as x)
+  </update>
+
+</mapper>

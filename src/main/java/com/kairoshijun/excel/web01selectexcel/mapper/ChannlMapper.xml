@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.ChannlMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Channl">
+    <id column="channelid" jdbcType="INTEGER" property="channelid" />
+    <result column="channel" jdbcType="CHAR" property="channel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    channelid, channel
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from channl
+    where channelid = #{channelid,jdbcType=INTEGER}
+  </select>
+    <select id="selectAll" resultType="com.kairoshijun.excel.web01selectexcel.model.Channl">
+      select * from channl
+    </select>
+    <select id="checkChannelId" resultType="java.lang.Integer">
+      select count(*) from channl where channelid = #{channelId}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from channl
+    where channelid = #{channelid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Channl">
+    insert into channl (channelid, channel)
+    values (#{channelid,jdbcType=INTEGER}, #{channel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Channl">
+    insert into channl
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="channelid != null">
+        channelid,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="channelid != null">
+        #{channelid,jdbcType=INTEGER},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Channl">
+    update channl
+    <set>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=CHAR},
+      </if>
+    </set>
+    where channelid = #{channelid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Channl">
+    update channl
+    set channel = #{channel,jdbcType=CHAR}
+    where channelid = #{channelid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>真丑~</title>
+    <!--    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery.js"></script>-->
+    <!-- 包括所有已编译的插件 -->
+    <script type="text/javascript" th:src="@{/jquery.js}"></script>
+    <!--bootstrap-->
+    <script type="text/javascript" th:src="@{/bootstrap_3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{/bootstrap_3.3.0/css/bootstrap.min.css}" rel="stylesheet"/>
+
+
+    <!--多选下拉框js-->
+    <script type="text/javascript" th:src="@{/dist/js/bootstrap-multiselect.js}"></script>
+    <link th:href="@{/dist/css/bootstrap-multiselect.css}" rel="stylesheet"/>
+    <!--时间控件css-->
+    <link th:href="@{/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css}" type="text/css"
+          rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js}"></script>
+    <script type="text/javascript"
+            th:src="@{/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js}"></script>
+
+
+    <script type="text/javascript" language="JavaScript">
+        var list = null;
+        /*正则表达式*/
+        var regex=/^[1-9]\d*$/;
+        $(function () {
+            $(document).ready(function () {
+                //设定日期选择格式
+                $('.form_datetime').datetimepicker({
+                    minView: "month", //选择日期后，不会再跳转去选择时分秒
+                    language: 'zh-CN',
+                    format: 'yyyy-mm-dd',
+                    todayBtn: 1,
+                    autoclose: 1
+                }).on("click", function () {
+
+                    //设定日期选择开始日期需要小于结束日期
+                    $("#hd_begdate").datetimepicker("setEndDate", $("#hd_enddate").val());
+                    $("#hd_enddate").datetimepicker("setStartDate", $("#hd_begdate").val());
+
+                });
+            });
+
+            $(document).ready(function () {
+                // $('#youxi').multiselect();
+                // $('#qudao').multiselect();
+                // $('#example-radio').multiselect();
+                // $('#example-multiple-optgroups').multiselect();
+                // $('#example-radio-optgroups').multiselect();
+                /*
+                *分组可选，可折叠，全选时不显示，所有option的数量
+                */
+                /*        $('#example-enableClickableOptGroups').multiselect({
+                            enableClickableOptGroups: true,
+                            selectAllNumber: false
+                        });*/
+                /*
+                *分组可选，可折叠，可全选，右侧显示下拉选项，
+                *触发选择事件，可搜索，可展示已选择option的数量（numberDisplayed）
+                */
+                $('#youxi').multiselect({
+                    enableClickableOptGroups: true,
+                    enableCollapsibleOptGroups: true,
+                    includeSelectAllOption: true,
+                    buttonWidth: '400px',
+                    dropRight: true,
+                    maxHeight: 600,
+                    onChange: function (option, checked) {
+                        /*if(条件) {
+              this.clearSelection();//清除所有选择及显示
+         }*/
+                    },
+                    nonSelectedText: '请选择',
+                    numberDisplayed: 10,
+                    enableFiltering: true,
+                    allSelectedText: '全部',
+                });
+                $('#qudao').multiselect({
+                    enableClickableOptGroups: true,
+                    enableCollapsibleOptGroups: true,
+                    includeSelectAllOption: true,
+                    buttonWidth: '400px',
+                    dropRight: true,
+                    maxHeight: 600,
+                    onChange: function (option, checked) {
+                        /*if(条件) {
+              this.clearSelection();//清除所有选择及显示
+         }*/
+                    },
+                    nonSelectedText: '请选择',
+                    numberDisplayed: 10,
+                    enableFiltering: true,
+                    allSelectedText: '全部',
+                });
+            });
+
+            /*发送ajax到后端查询*/
+            $("#select").click(function () {
+                var select = document.getElementById("youxi");
+                var str = [];
+                for (var i = 0; i < select.length; i++) {
+                    if (select.options[i].selected) {
+                        str.push(select[i].value);
+                    }
+                }
+                var select1 = document.getElementById("qudao");
+                var str1 = [];
+                for (var j = 0; j < select1.length; j++) {
+                    if (select1.options[j].selected) {
+                        str1.push(select1[j].value);
+                    }
+                }
+                /* alert("您将要查询的渠道有" + str1);
+                 alert("您将要查询的游戏有" + str);*/
+                var starTime = $("#hd_begdate").val();
+                var endTime = $("#hd_enddate").val();
+
+
+                $.ajax({
+                    url: "/kairogame/select",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        "flag": 1,
+                        "channelSZ": str1,
+                        "youxiSZ": str,
+                        "startTime": starTime,
+                        "endTime": endTime
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            alert(data.message)
+                        } else {
+                            /*alert("查询成功");*/
+                            var html = "";
+                            list = data.flist;
+                            var sum = 0;
+                            var xinZ = 0;
+                            $.each(list, function (i, n) {
+                                sum += n.sumIncome;
+                                xinZ += n.newNumber;
+                                if (i % 2 == 0) {
+                                    html += '<tr class="success">';
+                                } else if (i % 3 == 0) {
+                                    html += '<tr class="error">';
+                                } else {
+                                    html += '<tr class="warning">';
+                                }
+
+                                html += '<td>';
+                                html += '' + i + '';
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.dateTime.substr(0, 10);
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.game;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.series;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.channel;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.newNumber;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.active;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.splashIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.bannerIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.videoIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.ngIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.sumIncome;
+                                html += '</td>';
+                                html += '</tr>';
+                            })
+                            $("#showTr").html(html);
+                            var sum2 = toDecimal(sum);
+                            $("#sum").html(sum2);
+                            $("#xinZ").html(xinZ)
+                        }
+
+                    },
+                    error: function (res) {
+                        /*alert(res.responseText);*/
+                        alert("系统繁忙,请稍后再试...");
+                    }
+                });
+
+            })
+
+
+            $("#select2").click(function () {
+                var select = document.getElementById("youxi");
+                var str = [];
+                for (var i = 0; i < select.length; i++) {
+                    if (select.options[i].selected) {
+                        str.push(select[i].value);
+                    }
+                }
+                var select1 = document.getElementById("qudao");
+                var str1 = [];
+                for (var j = 0; j < select1.length; j++) {
+                    if (select1.options[j].selected) {
+                        str1.push(select1[j].value);
+                    }
+                }
+                /*alert("您将要查询的渠道有" + str1);
+                alert("您将要查询的游戏有" + str);*/
+                var starTime = $("#hd_begdate").val();
+                var endTime = $("#hd_enddate").val();
+
+
+                $.ajax({
+                    url: "/kairogame/select",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        "flag": 2,
+                        "channelSZ": str1,
+                        "youxiSZ": str,
+                        "startTime": starTime,
+                        "endTime": endTime
+                    },
+                    success: function (data) {
+                        if (data.code == 0) {
+                            alert(data.message)
+                        } else {
+                            /*alert("查询成功");*/
+                            var html = "";
+                            list = data.flist;
+                            var sum = 0;
+                            var xinZ = 0;
+                            $.each(list, function (i, n) {
+                                sum += n.sumIncome;
+                                xinZ += n.newNumber;
+                                if (i % 2 == 0) {
+                                    html += '<tr class="success">';
+                                } else if (i % 3 == 0) {
+                                    html += '<tr class="error">';
+                                } else {
+                                    html += '<tr class="warning">';
+                                }
+
+                                html += '<td>';
+                                html += '' + i + '';
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.dateTime.substr(0, 10);
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.game;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.series;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.channel;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.newNumber;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.active;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.splashIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.bannerIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.videoIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.ngIncome;
+                                html += '</td>';
+                                html += '<td>';
+                                html += n.sumIncome;
+                                html += '</td>';
+                                html += '</tr>';
+                            })
+                            $("#showTr").html(html);
+                            var sum2 = toDecimal(sum);
+                            $("#sum").html(sum2);
+                            $("#xinZ").html(xinZ)
+                        }
+
+                    },
+                    error: function (res) {
+                        /*alert(res.responseText);*/
+                        alert("系统繁忙,请稍后再试...");
+                    }
+                });
+
+            })
+            /*Excel下载点击事件*/
+            $('#js-export').click(function (e) {
+                if (list==null){
+                    alert("无数据!!!");
+                    return;
+                }
+                //e.preventDefault();//阻止a链接的跳转行为
+                $("#hiddenF").val(JSON.stringify(list));
+                $("#hForm").submit();
+
+            });
+            /*游戏添加按钮被点击事件*/
+            $("#js-tjyx").click(function () {
+                $("#myModal").modal("show");
+                $("#insertYouxiId").val("");
+                $("#insertYouxiName").val("");
+                hideMsg();
+                hideNmsg();
+                hideSmsg();
+            });
+            /*渠道添加按钮被点击事件*/
+            $("#js-tjqd").click(function () {
+                $("#myModal2").modal("show");
+                $("#insertChannelId").val("");
+                $("#insertChannelName").val("");
+                chideMsg();
+                chideNamemsg();
+            });
+            gameIdBlur();
+            gameNameBlur();
+            gameSeriesBlur();
+
+            $("#insertChannelId").blur(function () {
+                /!*判断渠道id的值是否为空 是否是4位正整数*!/
+                var insertChannelId=$.trim(this.value);
+                if (insertChannelId==""){
+                    cmsgShow("渠道id不能为空!!!");
+                    return false;
+                }else if(!regex.test(insertChannelId)){
+                    cmsgShow("请填入正确的正整数!!!");
+                    return false;
+                }
+                /!*发送ajax异步查询 是否重复*!/
+                $.ajax({
+                    url:"/kairogame/checkChannelId",
+                    data:{
+                        "channelId" : insertChannelId
+                    },
+                    async:false,
+                    type:"get",
+                    success:function (data) {
+                        if (data){
+                            chideMsg();
+                        } else{
+                            cmsgShow("渠道Id已重复!");
+                            return false;
+                        }
+                    }
+                })
+            })
+
+            $("#insertChannelName").blur(function () {
+                var insertChannelName=$.trim(this.value);
+                if(insertChannelName==""){
+                    cmsgNShow("渠道名不能为空");
+                    return false;
+                }
+                var select = document.getElementById("qudao");
+                for (var i = 0; i < select.length; i++) {
+                    if (select.options[i].value==insertChannelName) {
+                        cmsgNShow("渠道名重复");
+                        return false;
+                    }
+                }
+                chideNamemsg();
+            })
+
+            $("#insertYouxiId").focus(function () {
+                hideMsg();
+            });
+            $("#insertYouxiName").focus(function () {
+                hideNmsg();
+            });
+            $("#insertYouxiSeries").focus(function () {
+                hideSmsg();
+            });
+
+            $("#insertChannelId").focus(function () {
+                chideMsg();
+            });
+            $("#insertChannelName").focus(function () {
+                chideNamemsg();
+            })
+            /*insertGame点击事件*/
+            $("#insertGame").click(function () {
+                $("#insertYouxiId").blur();
+                $("#insertYouxiName").blur();
+                $("#insertYouxiSeries").blur();
+                var  youxiMsg=$("#youxiMsg").html();
+                var youxiNMsg=$("#youxiNMsg").html();
+                var youxiSMsg=$("#youxiSMsg").html();
+               if (youxiMsg==""&&youxiNMsg==""&&youxiSMsg==""){
+                    /*发送ajax,成功添加关闭模态窗 */
+                   var insertYouxiName=$.trim($("#insertYouxiName").val());
+                   var insertYouxiId=$.trim($("#insertYouxiId").val());
+                   var gameSeries=$.trim($("#insertYouxiSeries").val());
+                    $.ajax({
+                           url:"/kairogame/insertGame",
+                           data:{
+                           "gameName":insertYouxiName,
+                              "gameId":insertYouxiId,
+                               "gameSeries":gameSeries
+                           },
+                           type:"get",
+                           success:function (data) {
+                                  if (data){
+                                      $("#myModal").modal("hide");
+                                  }   else{
+                                      alert("游戏添加跑丢了呢~");
+                                      $("#myModal").modal("hide");
+                                  }
+                           }
+                    })
+               }
+            });
+            /*insertChannel事件*/
+            $("#insertChannel").click(function () {
+                $("#insertChannelId").blur();
+                $("#insertChannelName").blur();
+                var  channelIdMsg=$("#channelIdMsg").html();
+                var channelNMsg=$("#channelNMsg").html();
+                if (channelIdMsg==""&&channelNMsg==""){
+                    /*发送ajax,成功添加关闭模态窗 */
+                    var insertChannelId=$.trim($("#insertChannelId").val());
+                    var insertChannelName=$.trim($("#insertChannelName").val());
+                    $.ajax({
+                        url:"/kairogame/insertChannel",
+                        data:{
+                            "channelId":insertChannelId,
+                            "ChannelName":insertChannelName
+                        },
+                        type:"get",
+                        success:function (data) {
+                            if (data){
+                                $("#myModal2").modal("hide");
+                            }   else{
+                                alert("游戏添加跑丢了呢~");
+                                $("#myModal2").modal("hide");
+                            }
+                        }
+                    })
+                }
+            })
+        })
+        /*数据保留小数点后两位function*/
+        function toDecimal(x) {
+            var f = parseFloat(x);
+            if (isNaN(f)) {
+                return;
+            }
+            f = Math.round(x * 100) / 100;
+            return f;
+        }
+        /*错误提示*/
+        function msgShow(msg) {
+            $("#youxiMsg").html(msg)
+        }
+        function msgNshow(msg) {
+            $("#youxiNMsg").html(msg)
+        }
+        function msgSShow(msg) {
+            $("#youxiSMsg").html(msg)
+        }
+        function cmsgShow(msg) {
+            $("#channelIdMsg").html(msg);
+        }
+        function cmsgNShow(msg) {
+            $("#channelNMsg").html(msg)
+        }
+        /*影藏错误提示*/
+        function hideMsg() {
+            $("#youxiMsg").html("");
+        }
+        function hideNmsg() {
+            $("#youxiNMsg").html("");
+        }
+        function hideSmsg() {
+            $("#youxiSMsg").html("");
+        }
+        function chideMsg() {
+            $("#channelIdMsg").html("");
+
+        }
+        function chideNamemsg() {
+            $("#channelNMsg").html("");
+
+        }
+        /*当游戏id,name,series失去焦点时blur  获取焦点 focus */
+        function gameIdBlur() {
+            $("#ganmeCheck").on("blur","#insertYouxiId",function (i, n) {
+                /!*判断游戏id的值是否为空 是否是4位正整数*!/
+                var insertYouxiId=$.trim(this.value);
+                if (insertYouxiId==""){
+                    msgShow("游戏id不能为空!!!");
+                    return false;
+                }else if(!regex.test(insertYouxiId)){
+                    msgShow("请填入正确的正整数!!!");
+                    return false;
+                }
+                /!*发送ajax异步查询 是否重复*!/
+                $.ajax({
+                    url:"/kairogame/checkGameId",
+                    data:{
+                        "gameId" : insertYouxiId
+                    },
+                    async:false,
+                    type:"get",
+                    success:function (data) {
+                        if (data){
+                            hideMsg();
+                        } else{
+                            msgShow("游戏Id已重复!");
+                            return false;
+                        }
+                    }
+                })
+            })
+            /*$("#insertYouxiId").blur(function () {
+
+            });*/
+
+        }
+        function gameNameBlur() {
+            $("#insertYouxiName").blur(function () {
+               var insertYouxiName=$.trim(this.value);
+               if(insertYouxiName==""){
+                   msgNshow("游戏名不能为空");
+                   return false;
+               }
+                var select = document.getElementById("youxi");
+                for (var i = 0; i < select.length; i++) {
+                    if (select.options[i].value==insertYouxiName) {
+                         msgNshow("游戏名重复");
+                        return false;
+                    }
+                }
+                hideNmsg();
+            });
+        }
+        function gameSeriesBlur() {
+            $("#insertYouxiSeries").blur(function () {
+                var insertYouxiSeries=$.trim(this.value);
+                if (insertYouxiSeries==""){
+                    msgSShow("系列不能为空!");
+                    return false;
+                }else{
+                    hideSmsg();
+                }
+
+            })
+        }
+    </script>
+</head>
+<body th:inline="text">
+<!-- 隐 from表单-->
+<form th:action="@{/export}" th:method="post" th:id="hForm">
+    <input type="hidden" th:id="hiddenF" th:name="list">
+</form>
+<br/>
+<br/>
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <form role="form" class="form-inline">
+                <div class="rowGroup">
+                    <label class="col-sm-1 control-label">开始日期</label>
+                    <div class="col-sm-2 ">
+                        <div class="input-group">
+                            <input type="text" class="form-control form_datetime" name="hd_begdate" th:id="hd_begdate"
+                                   th:value="${timez}"/>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"
+                                                                  aria-hidden="true"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rowGroup">
+                    <label class="col-sm-1 control-label">结束日期</label>
+                    <div class="col-sm-2 ">
+                        <div class="input-group">
+                            <input type="text" class="form-control form_datetime" th:id="hd_enddate" name="hd_enddate"
+                                   th:value="${timej}"/>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"
+                                                                  aria-hidden="true"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="position:relative;">
+
+                </div>
+
+                <script>
+                    $(function () {
+                        $(".dropdown-toggle").dropdown('toggle');
+                    });
+                </script>
+                <div class="form-group">
+                    游戏
+                    <select id="youxi" multiple="multiple">
+                        <option th:each="game : ${gameList}" th:value="${game.game}">[[${game.game}]]</option>
+                    </select>
+                    渠道
+                    <select id="qudao" multiple="multiple">
+                        <option th:each="channel : ${channlList}" th:value="${channel.channel}">[[${channel.channel}]]
+                        </option>
+                    </select>
+                </div>
+
+
+                <button th:type="button" th:id="select" class="btn btn-default">查询</button>
+
+                <button th:type="button" th:id="select2" class="btn btn-default">查询2</button>
+            </form> <!--<button type="button" class="btn btn-default">刷新</button>-->
+            <br/>
+            <span>ps:因vivo,uc等更新数据延迟,如果查询不到收入,可使用查询2中查询</span><span
+                style="color: red">前天以前</span>的数据(其中可以查到vivo,uc的收入)</span>
+            <br/>
+            <br/>
+            <br/>
+            <button th:id="js-export" type="button" class="btn btn-primary">导出Excel</button>
+            <!--data-toggle="modal" data-target="#myModal"-->
+            &nbsp;&nbsp;&nbsp;&nbsp;<span><button th:id="js-tjyx" type="button" class="btn btn-primary" >添加游戏</button></span>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span><button th:id="js-tjqd" type="button" class="btn btn-primary" >添加渠道</button></span>
+           <!-- <span style="color: red; size: A3">Excel为最后一次查询的数据,选择自己要的数据查询后再导出!!!</span>-->
+            <br/>
+            <div>
+                收入: <font id="sum" style="color: forestgreen; size: A5"></font><br/>
+                新增:<font id="xinZ" style="color: #0f0f0f; size: A5"></font>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        编号
+                    </th>
+                    <th>
+                        时间
+                    </th>
+                    <th>
+                        游戏
+                    </th>
+                    <th>
+                        系列
+                    </th>
+                    <th>
+                        渠道名
+                    </th>
+                    <th>
+                        新增
+                    </th>
+                    <th>
+                        活跃
+                    </th>
+                    <th>
+                        开屏收入
+                    </th>
+                    <th>
+                        banner收入
+                    </th>
+                    <th>
+                        视频收入
+                    </th>
+                    <th>
+                        内购收入
+                    </th>
+                    <th>
+                        总收入
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="showTr">
+                </tbody>
+            </table>
+            <!-- 按钮触发模态框 -->
+           <!-- <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                开始演示模态框-->
+            </button>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                添加游戏
+                            </h4>
+                        </div>
+                        <div class="modal-body" th:id="ganmeCheck">
+                            游戏ID<input th:type="text" id="insertYouxiId" >
+                            <span th:id="youxiMsg" style="color: red; width: 20px"></span><br/><br/>
+                            游戏名<input th:type="text" th:id="insertYouxiName" >
+                            <span th:id="youxiNMsg" style="color: red"></span><br/><br/>
+                            系列&nbsp;&nbsp;&nbsp;&nbsp;<input th:type="text" th:id="insertYouxiSeries" >
+                            <span th:id="youxiSMsg" style="color: red"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="button" class="btn btn-primary" th:id="insertGame">
+                                提交更改
+                            </button>
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" >
+                                添加渠道
+                            </h4>
+                        </div>
+                        <div class="modal-body" th:id="channelCheck">
+                            渠道ID<input th:type="text" id="insertChannelId" >
+                            <span th:id="channelIdMsg" style="color: red; width: 20px"></span><br/><br/>
+                            渠道名<input th:type="text" th:id="insertChannelName" >
+                            <span th:id="channelNMsg" style="color: red"></span><br/><br/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                            </button>
+                            <button type="button" class="btn btn-primary" th:id="insertChannel">
+                                提交更改
+                            </button>
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

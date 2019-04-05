@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.GiftCodeListMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.GiftCodeList">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="gift_name" jdbcType="VARCHAR" property="giftName" />
+    <result column="desc_txt" jdbcType="VARCHAR" property="descTxt" />
+    <result column="gift_reward_id" jdbcType="VARCHAR" property="giftRewardId" />
+    <result column="gift_num" jdbcType="INTEGER" property="giftNum" />
+    <result column="begin_time" jdbcType="VARCHAR" property="beginTime" />
+    <result column="end_time" jdbcType="VARCHAR" property="endTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, game_id, channel_id, type, gift_name, desc_txt, gift_reward_id, gift_num, begin_time, 
+    end_time, create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gift_code_list
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectBylist" resultType="int">
+
+      SELECT id from gift_code_list
+      <where>
+
+        <if test="gameId != null">
+          game_id = #{gameId,jdbcType=VARCHAR}
+        </if>
+        <if test="channelId != null">
+         and channel_id = #{channelId,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+          and type =  #{type,jdbcType=INTEGER}
+        </if>
+        <if test="giftName != null">
+          and gift_name = #{giftName,jdbcType=VARCHAR}
+        </if>
+        <if test="descTxt != null">
+          and desc_txt = #{descTxt,jdbcType=VARCHAR}
+        </if>
+        <if test="giftRewardId != null">
+          and gift_reward_id = #{giftRewardId,jdbcType=VARCHAR}
+        </if>
+        <if test="giftNum != null">
+          and gift_num = #{giftNum,jdbcType=INTEGER}
+        </if>
+        <if test="beginTime != null">
+         and begin_time = #{beginTime,jdbcType=VARCHAR}
+        </if>
+        <if test="endTime != null">
+         and end_time = #{endTime,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime != null">
+          and create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+      </where>
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from gift_code_list
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.GiftCodeList">
+    insert into gift_code_list (id, game_id, channel_id, 
+      type, gift_name, desc_txt, 
+      gift_reward_id, gift_num, begin_time, 
+      end_time, create_time)
+    values (#{id,jdbcType=INTEGER}, #{gameId,jdbcType=VARCHAR}, #{channelId,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{giftName,jdbcType=VARCHAR}, #{descTxt,jdbcType=VARCHAR}, 
+      #{giftRewardId,jdbcType=VARCHAR}, #{giftNum,jdbcType=INTEGER}, #{beginTime,jdbcType=VARCHAR}, 
+      #{endTime,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.GiftCodeList">
+    insert into gift_code_list
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gameId != null">
+        game_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="giftName != null">
+        gift_name,
+      </if>
+      <if test="descTxt != null">
+        desc_txt,
+      </if>
+      <if test="giftRewardId != null">
+        gift_reward_id,
+      </if>
+      <if test="giftNum != null">
+        gift_num,
+      </if>
+      <if test="beginTime != null">
+        begin_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="gameId != null">
+        #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="giftName != null">
+        #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="descTxt != null">
+        #{descTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="giftRewardId != null">
+        #{giftRewardId,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNum != null">
+        #{giftNum,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        #{beginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.GiftCodeList">
+    update gift_code_list
+    <set>
+      <if test="gameId != null">
+        game_id = #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="giftName != null">
+        gift_name = #{giftName,jdbcType=VARCHAR},
+      </if>
+      <if test="descTxt != null">
+        desc_txt = #{descTxt,jdbcType=VARCHAR},
+      </if>
+      <if test="giftRewardId != null">
+        gift_reward_id = #{giftRewardId,jdbcType=VARCHAR},
+      </if>
+      <if test="giftNum != null">
+        gift_num = #{giftNum,jdbcType=INTEGER},
+      </if>
+      <if test="beginTime != null">
+        begin_time = #{beginTime,jdbcType=VARCHAR},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.GiftCodeList">
+    update gift_code_list
+    set game_id = #{gameId,jdbcType=VARCHAR},
+      channel_id = #{channelId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      gift_name = #{giftName,jdbcType=VARCHAR},
+      desc_txt = #{descTxt,jdbcType=VARCHAR},
+      gift_reward_id = #{giftRewardId,jdbcType=VARCHAR},
+      gift_num = #{giftNum,jdbcType=INTEGER},
+      begin_time = #{beginTime,jdbcType=VARCHAR},
+      end_time = #{endTime,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

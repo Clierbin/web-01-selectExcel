@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.PlayerPayLogMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="rmb" jdbcType="REAL" property="rmb" />
+    <result column="currency_get" jdbcType="INTEGER" property="currencyGet" />
+    <result column="currency_get_extra" jdbcType="INTEGER" property="currencyGetExtra" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="pay_status" jdbcType="INTEGER" property="payStatus" />
+    <result column="ios_status" jdbcType="VARCHAR" property="iosStatus" />
+    <result column="ios_verify" jdbcType="VARCHAR" property="iosVerify" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    <result column="ios_receipt" jdbcType="LONGVARCHAR" property="iosReceipt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_id, game_id, channel_id, goods_name, create_time, rmb, currency_get, currency_get_extra, 
+    order_id, pay_status, ios_status, ios_verify
+  </sql>
+  <sql id="Blob_Column_List">
+    ios_receipt
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from player_pay_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByTD" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from player_pay_log
+    WHERE
+    (create_time  BETWEEN #{startTime} AND #{endTime})
+    and game_id in
+    <foreach collection="youxiSZ" open="(" close=")" item="gameId" separator=",">
+      #{gameId}
+    </foreach>
+    and channel_id = #{channelId}
+    order by create_time
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from player_pay_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    insert into player_pay_log (id, role_id, game_id, 
+      channel_id, goods_name, create_time, 
+      rmb, currency_get, currency_get_extra, 
+      order_id, pay_status, ios_status, 
+      ios_verify, ios_receipt)
+    values (#{id,jdbcType=INTEGER}, #{roleId,jdbcType=BIGINT}, #{gameId,jdbcType=VARCHAR}, 
+      #{channelId,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{rmb,jdbcType=REAL}, #{currencyGet,jdbcType=INTEGER}, #{currencyGetExtra,jdbcType=INTEGER}, 
+      #{orderId,jdbcType=VARCHAR}, #{payStatus,jdbcType=INTEGER}, #{iosStatus,jdbcType=VARCHAR}, 
+      #{iosVerify,jdbcType=VARCHAR}, #{iosReceipt,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    insert into player_pay_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="gameId != null">
+        game_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="goodsName != null">
+        goods_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="rmb != null">
+        rmb,
+      </if>
+      <if test="currencyGet != null">
+        currency_get,
+      </if>
+      <if test="currencyGetExtra != null">
+        currency_get_extra,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="payStatus != null">
+        pay_status,
+      </if>
+      <if test="iosStatus != null">
+        ios_status,
+      </if>
+      <if test="iosVerify != null">
+        ios_verify,
+      </if>
+      <if test="iosReceipt != null">
+        ios_receipt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="gameId != null">
+        #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsName != null">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rmb != null">
+        #{rmb,jdbcType=REAL},
+      </if>
+      <if test="currencyGet != null">
+        #{currencyGet,jdbcType=INTEGER},
+      </if>
+      <if test="currencyGetExtra != null">
+        #{currencyGetExtra,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payStatus != null">
+        #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="iosStatus != null">
+        #{iosStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="iosVerify != null">
+        #{iosVerify,jdbcType=VARCHAR},
+      </if>
+      <if test="iosReceipt != null">
+        #{iosReceipt,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    update player_pay_log
+    <set>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="gameId != null">
+        game_id = #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rmb != null">
+        rmb = #{rmb,jdbcType=REAL},
+      </if>
+      <if test="currencyGet != null">
+        currency_get = #{currencyGet,jdbcType=INTEGER},
+      </if>
+      <if test="currencyGetExtra != null">
+        currency_get_extra = #{currencyGetExtra,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="payStatus != null">
+        pay_status = #{payStatus,jdbcType=INTEGER},
+      </if>
+      <if test="iosStatus != null">
+        ios_status = #{iosStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="iosVerify != null">
+        ios_verify = #{iosVerify,jdbcType=VARCHAR},
+      </if>
+      <if test="iosReceipt != null">
+        ios_receipt = #{iosReceipt,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    update player_pay_log
+    set role_id = #{roleId,jdbcType=BIGINT},
+      game_id = #{gameId,jdbcType=VARCHAR},
+      channel_id = #{channelId,jdbcType=VARCHAR},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      rmb = #{rmb,jdbcType=REAL},
+      currency_get = #{currencyGet,jdbcType=INTEGER},
+      currency_get_extra = #{currencyGetExtra,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      pay_status = #{payStatus,jdbcType=INTEGER},
+      ios_status = #{iosStatus,jdbcType=VARCHAR},
+      ios_verify = #{iosVerify,jdbcType=VARCHAR},
+      ios_receipt = #{iosReceipt,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.PlayerPayLog">
+    update player_pay_log
+    set role_id = #{roleId,jdbcType=BIGINT},
+      game_id = #{gameId,jdbcType=VARCHAR},
+      channel_id = #{channelId,jdbcType=VARCHAR},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      rmb = #{rmb,jdbcType=REAL},
+      currency_get = #{currencyGet,jdbcType=INTEGER},
+      currency_get_extra = #{currencyGetExtra,jdbcType=INTEGER},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      pay_status = #{payStatus,jdbcType=INTEGER},
+      ios_status = #{iosStatus,jdbcType=VARCHAR},
+      ios_verify = #{iosVerify,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

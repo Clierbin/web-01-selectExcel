@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.UmengMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="gameid" jdbcType="INTEGER" property="gameid" />
+    <result column="datetime" jdbcType="DATE" property="datetime" />
+    <result column="channlid" jdbcType="INTEGER" property="channlid" />
+    <result column="xinzeng" jdbcType="INTEGER" property="xinzeng" />
+    <result column="huoyue" jdbcType="INTEGER" property="huoyue" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, gameid, datetime, channlid, xinzeng, huoyue
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from umeng
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectByTime" resultType="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+      select <include refid="Base_Column_List"/>
+      from umeng
+      where datetime =str_to_date(#{date}, '%Y-%m-%d %H');
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from umeng
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+    insert into umeng (id, gameid, datetime, 
+      channlid, xinzeng, huoyue
+      )
+    values (#{id,jdbcType=INTEGER}, #{gameid,jdbcType=INTEGER}, #{datetime,jdbcType=DATE}, 
+      #{channlid,jdbcType=INTEGER}, #{xinzeng,jdbcType=INTEGER}, #{huoyue,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+    insert into umeng
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="gameid != null">
+        gameid,
+      </if>
+      <if test="datetime != null">
+        datetime,
+      </if>
+      <if test="channlid != null">
+        channlid,
+      </if>
+      <if test="xinzeng != null">
+        xinzeng,
+      </if>
+      <if test="huoyue != null">
+        huoyue,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="gameid != null">
+        #{gameid,jdbcType=INTEGER},
+      </if>
+      <if test="datetime != null">
+        #{datetime,jdbcType=DATE},
+      </if>
+      <if test="channlid != null">
+        #{channlid,jdbcType=INTEGER},
+      </if>
+      <if test="xinzeng != null">
+        #{xinzeng,jdbcType=INTEGER},
+      </if>
+      <if test="huoyue != null">
+        #{huoyue,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+    update umeng
+    <set>
+      <if test="gameid != null">
+        gameid = #{gameid,jdbcType=INTEGER},
+      </if>
+      <if test="datetime != null">
+        datetime = #{datetime,jdbcType=DATE},
+      </if>
+      <if test="channlid != null">
+        channlid = #{channlid,jdbcType=INTEGER},
+      </if>
+      <if test="xinzeng != null">
+        xinzeng = #{xinzeng,jdbcType=INTEGER},
+      </if>
+      <if test="huoyue != null">
+        huoyue = #{huoyue,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Umeng">
+    update umeng
+    set gameid = #{gameid,jdbcType=INTEGER},
+      datetime = #{datetime,jdbcType=DATE},
+      channlid = #{channlid,jdbcType=INTEGER},
+      xinzeng = #{xinzeng,jdbcType=INTEGER},
+      huoyue = #{huoyue,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

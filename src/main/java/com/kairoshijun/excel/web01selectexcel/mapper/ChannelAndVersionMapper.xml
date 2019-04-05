@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.ChannelAndVersionMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.ChannelAndVersion">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="channel_id" jdbcType="VARCHAR" property="channelId" />
+    <result column="game_id" jdbcType="VARCHAR" property="gameId" />
+    <result column="is_available" jdbcType="BIT" property="isAvailable" />
+    <result column="channel_info" jdbcType="VARCHAR" property="channelInfo" />
+    <result column="version_num" jdbcType="VARCHAR" property="versionNum" />
+    <result column="version_download" jdbcType="VARCHAR" property="versionDownload" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, channel_id, game_id, is_available, channel_info, version_num, version_download
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from channel_and_version
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="getAll" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"/>
+      from channel_and_version
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from channel_and_version
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.ChannelAndVersion">
+    insert into channel_and_version (id, channel_id, game_id, 
+      is_available, channel_info, version_num, 
+      version_download)
+    values (#{id,jdbcType=INTEGER}, #{channelId,jdbcType=VARCHAR}, #{gameId,jdbcType=VARCHAR}, 
+      #{isAvailable,jdbcType=BIT}, #{channelInfo,jdbcType=VARCHAR}, #{versionNum,jdbcType=VARCHAR}, 
+      #{versionDownload,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.ChannelAndVersion">
+    insert into channel_and_version
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="gameId != null">
+        game_id,
+      </if>
+      <if test="isAvailable != null">
+        is_available,
+      </if>
+      <if test="channelInfo != null">
+        channel_info,
+      </if>
+      <if test="versionNum != null">
+        version_num,
+      </if>
+      <if test="versionDownload != null">
+        version_download,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="gameId != null">
+        #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        #{isAvailable,jdbcType=BIT},
+      </if>
+      <if test="channelInfo != null">
+        #{channelInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="versionNum != null">
+        #{versionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="versionDownload != null">
+        #{versionDownload,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.ChannelAndVersion">
+    update channel_and_version
+    <set>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=VARCHAR},
+      </if>
+      <if test="gameId != null">
+        game_id = #{gameId,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        is_available = #{isAvailable,jdbcType=BIT},
+      </if>
+      <if test="channelInfo != null">
+        channel_info = #{channelInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="versionNum != null">
+        version_num = #{versionNum,jdbcType=VARCHAR},
+      </if>
+      <if test="versionDownload != null">
+        version_download = #{versionDownload,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.ChannelAndVersion">
+    update channel_and_version
+    set channel_id = #{channelId,jdbcType=VARCHAR},
+      game_id = #{gameId,jdbcType=VARCHAR},
+      is_available = #{isAvailable,jdbcType=BIT},
+      channel_info = #{channelInfo,jdbcType=VARCHAR},
+      version_num = #{versionNum,jdbcType=VARCHAR},
+      version_download = #{versionDownload,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

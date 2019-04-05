@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.GameMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Game">
+    <id column="gameid" jdbcType="INTEGER" property="gameid" />
+    <id column="game" jdbcType="CHAR" property="game" />
+    <id column="series" jdbcType="CHAR" property="series" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    gameid,game,series
+  </sql>
+
+  <delete id="deleteByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Game">
+    delete from game
+    where gameid = #{gameid,jdbcType=INTEGER}
+      and game = #{game,jdbcType=CHAR}
+      and series = #{series,jdbcType=CHAR}
+  </delete>
+  <select id="checkGameId" resultType="java.lang.Integer">
+    select count (*) from game where gameid=#{gameId}
+  </select>
+  <select id="selectAll" resultType="com.kairoshijun.excel.web01selectexcel.model.Game">
+    select <include refid="Base_Column_List"/>
+    from game
+  </select>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Game">
+    insert into game (gameid, game, series
+      )
+    values (#{gameid,jdbcType=INTEGER}, #{game,jdbcType=CHAR}, #{series,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Game">
+    insert into game
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gameid != null">
+        gameid,
+      </if>
+      <if test="game != null">
+        game,
+      </if>
+      <if test="series != null">
+        series,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gameid != null">
+        #{gameid,jdbcType=INTEGER},
+      </if>
+      <if test="game != null">
+        #{game,jdbcType=CHAR},
+      </if>
+      <if test="series != null">
+        #{series,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

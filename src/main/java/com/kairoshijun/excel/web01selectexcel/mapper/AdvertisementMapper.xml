@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.AdvertisementMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Advertisement">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="date_time" jdbcType="DATE" property="dateTime" />
+    <result column="game_id" jdbcType="INTEGER" property="gameId" />
+    <result column="channl_id" jdbcType="INTEGER" property="channlId" />
+    <result column="ad" jdbcType="VARCHAR" property="ad" />
+    <result column="income" jdbcType="REAL" property="income" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, date_time, game_id, channl_id, ad, income
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from advertisement
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <select id="selectIncome" resultType="java.lang.Double">
+      select sum(income) from advertisement
+      where date_time=str_to_date(#{date}, '%Y-%m-%d') and game_id = #{gameId} and channl_id =#{channel} and ad = #{ad}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from advertisement
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Advertisement">
+    insert into advertisement (id, date_time, game_id, 
+      channl_id, ad, income)
+    values (#{id,jdbcType=INTEGER}, #{dateTime,jdbcType=DATE}, #{gameId,jdbcType=INTEGER}, 
+      #{channlId,jdbcType=INTEGER}, #{ad,jdbcType=VARCHAR}, #{income,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Advertisement">
+    insert into advertisement
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dateTime != null">
+        date_time,
+      </if>
+      <if test="gameId != null">
+        game_id,
+      </if>
+      <if test="channlId != null">
+        channl_id,
+      </if>
+      <if test="ad != null">
+        ad,
+      </if>
+      <if test="income != null">
+        income,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dateTime != null">
+        #{dateTime,jdbcType=DATE},
+      </if>
+      <if test="gameId != null">
+        #{gameId,jdbcType=INTEGER},
+      </if>
+      <if test="channlId != null">
+        #{channlId,jdbcType=INTEGER},
+      </if>
+      <if test="ad != null">
+        #{ad,jdbcType=VARCHAR},
+      </if>
+      <if test="income != null">
+        #{income,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Advertisement">
+    update advertisement
+    <set>
+      <if test="dateTime != null">
+        date_time = #{dateTime,jdbcType=DATE},
+      </if>
+      <if test="gameId != null">
+        game_id = #{gameId,jdbcType=INTEGER},
+      </if>
+      <if test="channlId != null">
+        channl_id = #{channlId,jdbcType=INTEGER},
+      </if>
+      <if test="ad != null">
+        ad = #{ad,jdbcType=VARCHAR},
+      </if>
+      <if test="income != null">
+        income = #{income,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Advertisement">
+    update advertisement
+    set date_time = #{dateTime,jdbcType=DATE},
+      game_id = #{gameId,jdbcType=INTEGER},
+      channl_id = #{channlId,jdbcType=INTEGER},
+      ad = #{ad,jdbcType=VARCHAR},
+      income = #{income,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

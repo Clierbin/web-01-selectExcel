@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件发送</title>
+    <script type="text/javascript" th:src="@{/jquery.js}"></script>
+    <!--bootstrap-->
+    <script type="text/javascript" th:src="@{/bootstrap_3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{/bootstrap_3.3.0/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!--多选下拉框js-->
+    <script type="text/javascript" th:src="@{/dist/js/bootstrap-multiselect.js}"></script>
+    <link th:href="@{/dist/css/bootstrap-multiselect.css}" rel="stylesheet"/>
+    <!--时间控件css-->
+    <link th:href="@{/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css}" type="text/css"
+          rel="stylesheet"/>
+    <script type="text/javascript" th:src="@{/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js}"></script>
+    <script type="text/javascript"
+            th:src="@{/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js}"></script>
+    <script type="text/javascript" language="JavaScript">
+        $(function () {
+            $('#youxi').multiselect({
+                enableClickableOptGroups: true,
+                enableCollapsibleOptGroups: true,
+                includeSelectAllOption: true,
+                buttonWidth: '150px',
+                dropRight: true,
+                maxHeight: 600,
+                onChange: function (option, checked) {
+                    /*if(条件) {
+          this.clearSelection();//清除所有选择及显示
+     }*/
+                },
+                nonSelectedText: '请选择',
+                numberDisplayed: 10,
+                enableFiltering: true,
+                allSelectedText: '全部'
+            });
+            $('#qudao').multiselect({
+                enableClickableOptGroups: true,
+                enableCollapsibleOptGroups: true,
+                includeSelectAllOption: false,
+                buttonWidth: '150px',
+                dropRight: true,
+                maxHeight: 600,
+                onChange: function (option, checked) {
+                    /*if(条件) {
+          this.clearSelection();//清除所有选择及显示
+     }*/
+                },
+                nonSelectedText: '请选择',
+                numberDisplayed: 10,
+                enableFiltering: true,
+                allSelectedText: '全部'
+            });
+
+            $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss', language: 'zh-CN'});
+            $("#sendTime").val(new Date().Format("yyyy-MM-dd hh:mm:ss"));
+            $("input[name='optionsRadiosinline']").click(function () {
+                if (this.value == 3) {
+                    $("#jieshou").attr("readonly", "readonly");
+                    $("#jieshou").val("");
+                } else {
+                    $("#jieshou").removeAttr("readonly");
+                }
+            });
+
+
+            //当点击提交时对所有数据进行判断,查看是否为空  为空则不提交
+            $("#insert").click(function () {
+                var jieshou = $("#jieshou").val();
+                var type = $("input[name='optionsRadiosinline']:checked").val();
+                var gameId = $("#youxi").val();
+                var channelId = $("#qudao").val();
+                var title = $("#title").val();
+                var context = $("#context").val();
+                var goodsId = $("#goodsId").val();
+                var goodsNum = $("#goodsNum").val();
+                var sendTime = $("#sendTime").val();
+                if (type != 3 && jieshou == "") {
+                    alert("接收者Id不能为空");
+                    return;
+                }
+                if (title == "" && context == "" && goodsId == "") {
+                    alert("邮件标题,内容,商品id等 不能为空");
+                    return;
+                }
+                var data={
+                    "jieshou":jieshou,
+                    "type":type,
+                    "gameId":gameId,
+                    "channelId":channelId,
+                    "title":title,
+                    "context":context,
+                    "goodsId":goodsId,
+                    "goodsNum":goodsNum,
+                    "sendTime":sendTime
+                }
+
+
+                $.ajax({
+                    url: "/kairogame/mail/insert",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    type: "post",
+                    contentType:"application/json",
+                    success: function (data) {
+                        alert(data.message)
+                        if (data.code==1) {
+                            /*模态窗口关闭*/
+                            $("#myModal").modal("hide")
+                        }
+                    },
+                    error: function () {
+                    }
+                })
+
+            })
+        })
+
+        // 对Date的扩展，将 Date 转化为指定格式的String
+        // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+        // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+        // 例子：
+        // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423
+        // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18
+        Date.prototype.Format = function(fmt)
+        { //author: meizz
+            var o = {
+                "M+" : this.getMonth()+1,                 //月份
+                "d+" : this.getDate(),                    //日
+                "h+" : this.getHours(),                   //小时
+                "m+" : this.getMinutes(),                 //分
+                "s+" : this.getSeconds(),                 //秒
+                "q+" : Math.floor((this.getMonth()+3)/3), //季度
+                "S"  : this.getMilliseconds()             //毫秒
+            };
+            if(/(y+)/.test(fmt))
+                fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+            for(var k in o)
+                if(new RegExp("("+ k +")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+            return fmt;
+        }
+    </script>
+    <!--文本域 提示 格式-->
+    <style>
+        textarea::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+            color: red !important;
+        }
+
+        textarea::-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: red !important;
+        }
+
+        textarea:-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: red !important;
+        }
+
+        textarea:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: red !important;
+        }
+
+    </style>
+
+
+</head>
+<body th:inline="text">
+<div class="container">
+    <div class="jumbotron">
+        <h1>邮件发送页面！</h1>
+        <p>这是用来发送邮件(mail)的实例。</p>
+        <p>
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">开始发送邮件</button>
+        </p>
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">发送邮件信息!</h4>
+            </div>
+            <form class="form-inline" role="form">
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <textarea class="form-control read" style="width: 530px" rows="5" th:id="jieshou"
+                                          placeholder="接收者ID (ps : 只能用数字!!!多个ID 用,分开哦)"></textarea>
+                            </div>
+
+                            </span>
+                            </span>
+                        </li>
+
+                        <li class="list-group-item">
+
+                            <div>
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="optionsRadiosinline" id="optionsRadios1"
+                                           value="1" checked> 奖励
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="optionsRadiosinline" id="optionsRadios2"
+                                           value="2"> 普通
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="radio" name="optionsRadiosinline" id="optionsRadios3"
+                                           value="3"> 全服
+                                </label>
+                            </div>
+
+                        </li>
+                        <li class="list-group-item">
+
+
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                游戏
+                                <select id="youxi">
+                                    <option th:each="gameNew : ${gameNewList}" th:value="${gameNew.gameId}">
+                                        [[${gameNew.nameCn}]]
+                                    </option>
+                                </select>
+                                <span>
+                             渠道
+                        <select id="qudao">
+                            <option th:each="cav : ${channelAndVersionList}" th:value="${cav.channelId}">[[${cav.channelInfo}]]</option>
+
+                        </select>
+
+                        </span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <input type="text" class="form-control" th:id="title" placeholder="输入邮件标题">
+
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <input type="text" class="form-control" th:id="context" placeholder="输入邮件内容">
+
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <input type="text" class="form-control" th:id="goodsId" style="width: 400px"
+                                       placeholder="物品ID 必须是数字">
+
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <input type="text" class="form-control" th:id="goodsNum" placeholder="商品数量">
+
+                            </div>
+                        </li>
+                        <li class="list-group-item">  <!--th:value="${timez}"-->
+                            发送时间:　<input size="18" type="text" th:id="sendTime"  width="210px" readonly
+                                         class="form_datetime">
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" th:id="insert">提交更改</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal --> Cannot connect to destination host
+</div>
+</body>
+</html>

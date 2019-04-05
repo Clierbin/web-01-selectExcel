@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kairoshijun.excel.web01selectexcel.mapper.FinaltableMapper">
+  <resultMap id="BaseResultMap" type="com.kairoshijun.excel.web01selectexcel.model.Finaltable">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="game" jdbcType="VARCHAR" property="game" />
+    <result column="series" jdbcType="VARCHAR" property="series" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="date_time" jdbcType="DATE" property="dateTime" />
+    <result column="splash_income" jdbcType="DOUBLE" property="splashIncome" />
+    <result column="ng_income" jdbcType="DOUBLE" property="ngIncome" />
+    <result column="banner_income" jdbcType="DOUBLE" property="bannerIncome" />
+    <result column="video_income" jdbcType="DOUBLE" property="videoIncome" />
+    <result column="sum_income" jdbcType="DOUBLE" property="sumIncome" />
+    <result column="new_number" jdbcType="INTEGER" property="newNumber" />
+    <result column="active" jdbcType="INTEGER" property="active" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, game, series, channel, date_time, splash_income,ng_income ,banner_income, video_income,
+    sum_income, new_number, active
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from finaltable
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByTD" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from finaltable
+    WHERE
+    (date_time  BETWEEN str_to_date(#{startTime}, '%Y-%m-%d')  AND str_to_date(#{endTime}, '%Y-%m-%d'))
+    and game in
+     <foreach collection="youxiSZ" open="(" close=")" item="game" separator=",">
+       #{game}
+     </foreach>
+     and channel in
+    <foreach collection="channelSZ" open="(" close=")" item="channel" separator=",">
+      #{channel}
+    </foreach>
+    order by date_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from finaltable
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.kairoshijun.excel.web01selectexcel.model.Finaltable">
+    insert into finaltable (id, game, series, 
+      channel, date_time, splash_income,ng_income,
+      banner_income, video_income, sum_income, 
+      new_number, active)
+    values (#{id,jdbcType=INTEGER}, #{game,jdbcType=VARCHAR}, #{series,jdbcType=VARCHAR}, 
+      #{channel,jdbcType=VARCHAR}, #{dateTime,jdbcType=DATE}, #{splashIncome,jdbcType=DOUBLE}, #{ngIncome,jdbcType=DOUBLE},
+      #{bannerIncome,jdbcType=DOUBLE}, #{videoIncome,jdbcType=DOUBLE}, #{sumIncome,jdbcType=DOUBLE}, 
+      #{newNumber,jdbcType=INTEGER}, #{active,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Finaltable">
+    insert into finaltable
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="game != null">
+        game,
+      </if>
+      <if test="series != null">
+        series,
+      </if>
+      <if test="channel != null">
+        channel,
+      </if>
+      <if test="dateTime != null">
+        date_time,
+      </if>
+      <if test="splashIncome != null">
+        splash_income,
+      </if>
+      <if test="ngIncome != null">
+        ng_income,
+      </if>
+      <if test="bannerIncome != null">
+        banner_income,
+      </if>
+      <if test="videoIncome != null">
+        video_income,
+      </if>
+      <if test="sumIncome != null">
+        sum_income,
+      </if>
+      <if test="newNumber != null">
+        new_number,
+      </if>
+      <if test="active != null">
+        active,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="game != null">
+        #{game,jdbcType=VARCHAR},
+      </if>
+      <if test="series != null">
+        #{series,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="dateTime != null">
+        #{dateTime,jdbcType=DATE},
+      </if>
+      <if test="splashIncome != null">
+        #{splashIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="ngIncome != null">
+        #{ngIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="bannerIncome != null">
+        #{bannerIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="videoIncome != null">
+        #{videoIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="sumIncome != null">
+        #{sumIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="newNumber != null">
+        #{newNumber,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        #{active,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertByDSTime">
+    insert into finaltable
+    (game, series, channel, date_time, splash_income,ng_income, banner_income, video_income, sum_income, new_number, active)
+    values
+    <foreach collection="flist" separator="," item="f"  index="index">
+      (#{f.game,jdbcType=VARCHAR},#{f.series,jdbcType=VARCHAR},#{f.channel,jdbcType=VARCHAR},#{f.dateTime,jdbcType=DATE},#{f.splashIncome,jdbcType=DOUBLE},#{f.ngIncome,jdbcType=DOUBLE},
+      #{f.bannerIncome,jdbcType=DOUBLE}, #{f.videoIncome,jdbcType=DOUBLE},#{f.sumIncome,jdbcType=DOUBLE},#{f.newNumber,jdbcType=INTEGER}, #{f.active,jdbcType=INTEGER})
+
+      <!--<if test="f.game != null">
+        (#{f.game,jdbcType=VARCHAR},
+      </if>
+      <if test="f.series != null">
+        #{f.series,jdbcType=VARCHAR},
+      </if>
+      <if test="f.channel != null">
+        #{f.channel,jdbcType=VARCHAR},
+      </if>
+      <if test="f.dateTime != null">
+        #{f.dateTime,jdbcType=DATE},
+      </if>
+      <if test="f.splashIncome != null">
+        #{f.splashIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="f.bannerIncome != null">
+        #{f.bannerIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="f.videoIncome != null">
+        #{f.videoIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="f.sumIncome != null">
+        #{f.sumIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="f.newNumber != null">
+        #{f.newNumber,jdbcType=INTEGER},
+      </if>
+      <if test="f.active != null">
+        #{f.active,jdbcType=INTEGER})
+      </if>-->
+    </foreach>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.kairoshijun.excel.web01selectexcel.model.Finaltable">
+    update finaltable
+    <set>
+      <if test="game != null">
+        game = #{game,jdbcType=VARCHAR},
+      </if>
+      <if test="series != null">
+        series = #{series,jdbcType=VARCHAR},
+      </if>
+      <if test="channel != null">
+        channel = #{channel,jdbcType=VARCHAR},
+      </if>
+      <if test="dateTime != null">
+        date_time = #{dateTime,jdbcType=DATE},
+      </if>
+      <if test="splashIncome != null">
+        splash_income = #{splashIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="ngIncome != null">
+        ng_income = #{ngIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="bannerIncome != null">
+        banner_income = #{bannerIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="videoIncome != null">
+        video_income = #{videoIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="sumIncome != null">
+        sum_income = #{sumIncome,jdbcType=DOUBLE},
+      </if>
+      <if test="newNumber != null">
+        new_number = #{newNumber,jdbcType=INTEGER},
+      </if>
+      <if test="active != null">
+        active = #{active,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.kairoshijun.excel.web01selectexcel.model.Finaltable">
+    update finaltable
+    set game = #{game,jdbcType=VARCHAR},
+      series = #{series,jdbcType=VARCHAR},
+      channel = #{channel,jdbcType=VARCHAR},
+      date_time = #{dateTime,jdbcType=DATE},
+      splash_income = #{splashIncome,jdbcType=DOUBLE},
+      ng_income = #{ngIncome,jdbcType=DOUBLE},
+      banner_income = #{bannerIncome,jdbcType=DOUBLE},
+      video_income = #{videoIncome,jdbcType=DOUBLE},
+      sum_income = #{sumIncome,jdbcType=DOUBLE},
+      new_number = #{newNumber,jdbcType=INTEGER},
+      active = #{active,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
