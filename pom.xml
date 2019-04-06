@@ -131,6 +131,7 @@
                     <include>**/*.xml</include>
                 </includes>
             </resource>
+
             <resource>
                 <!--源文件位置-->
                 <directory>src/main/resources</directory>
